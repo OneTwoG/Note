@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Note</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="nav_index">首页</string>
+    <string name="nav_site">站点</string>
+    <string name="nav_theme">主题</string>
+    <string name="nav_weekly">周刊</string>
+    <string name="nav_my">我的</string>
+    <string name="nav_model">夜间模式</string>
+    <string name="nav_download">离线下载</string>
+    <string name="nav_setting">相关设置</string>
+</resources>

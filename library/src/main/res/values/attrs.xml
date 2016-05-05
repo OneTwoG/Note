@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RealHorizontalScrollView">
+        //关联值，表示参考某一资源ID
+        <attr name="src" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="RealViewPager">
+        <attr name="parallaxVelocity" format="float" />
+    </declare-styleable>
+</resources>
