@@ -1,4 +1,4 @@
-package userlogin;
+package user;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +32,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
     private Button mLogin;
     private Button mMissPwd;
     private ImageView mBack;
+    private ImageView mRegister;
 
     //1,2便是登录失败,0表示登录成功
     private static final int LOGIN_NULL = 1;
@@ -66,6 +67,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
         mLogin.setOnClickListener(this);
         mMissPwd.setOnClickListener(this);
         mBack.setOnClickListener(this);
+        mRegister.setOnClickListener(this);
     }
 
     private void initView() {
@@ -74,6 +76,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
         mLogin = (Button) findViewById(R.id.btn_login);
         mMissPwd = (Button) findViewById(R.id.btn_missPwd);
         mBack = (ImageView) findViewById(R.id.iv_back);
+        mRegister = (ImageView) findViewById(R.id.iv_register);
     }
 
     /**
@@ -175,8 +178,14 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
             case R.id.btn_missPwd:
                 //执行忘记密码操作
                 Toast.makeText(UserLogin.this, "这个还没准备好", Toast.LENGTH_SHORT).show();
+                break;
             case R.id.iv_back:
                 finish();
+                break;
+            case R.id.iv_register:
+                //跳转到用户注册界面
+                Intent intent = new Intent(UserLogin.this, UserRegister.class);
+                startActivity(intent);
                 break;
         }
     }
