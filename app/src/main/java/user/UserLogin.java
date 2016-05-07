@@ -40,6 +40,9 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
     private static final int LOGIN_ERROR = 2;
     private boolean isLoginok = false;
 
+    //用于存储服务器返回的用户名
+    private String user_name;
+
     //setResult返回的requestCode
     private static final int RESULT_OK = 1;
 
@@ -97,7 +100,6 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
             new Thread() {
                 @Override
                 public void run() {
-                    Log.d("UserLogin", "准备进入服务器");
                     //从服务器验证 用户名 和 密码 是否正确
                     checkFromServer(mmUserCount, mmUserPwd);
                 }
@@ -105,14 +107,15 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    private void checkFromServer(String mmUserName, String mmUserPass) {
+    private void checkFromServer(String mmUserNumber, String mmUserPwd) {
         //用户已经输入 用户名 和 密码
         //从服务器获取信息进行判断
         String address = "http://139.129.39.66/api/user_login.php";
-        String info = "user_name=" + mmUserName + "&" + "user_pass=" + mmUserPass;
+        String info = "user_number=" + mmUserNumber + "&" + "user_pwd=" + mmUserPwd;
 
         //上传服务器验证，并获取返回的信息
         String result_code = HttpUtil.sendPost(address, info);
+        Log.d("UserLogin", "返回的数据" + result_code);
 
         //对服务器返回的结果进行解析 判断
         if (result_code == null) {
@@ -124,6 +127,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
             //对返回的结果进行JSON解析
             JSONObject jsonObject = new JSONObject(result_code);
             int ret_code = jsonObject.getInt("ret_code");
+            user_name = jsonObject.getString("user_name");
             if (ret_code == LOGIN_OK) {
                 //登录成功
                 handler.sendEmptyMessage(LOGIN_OK);
@@ -152,7 +156,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                     Intent intent = new Intent(UserLogin.this, MainActivity.class);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("user_name", mUserCount.getText().toString());
+                    bundle.putString("user_name", user_name);
                     bundle.putBoolean("isLogin", true);
                     intent.putExtras(bundle);
                     setResult(LOGIN_OK, intent);
@@ -186,6 +190,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                 //跳转到用户注册界面
                 Intent intent = new Intent(UserLogin.this, UserRegister.class);
                 startActivity(intent);
+                finish();
                 break;
         }
     }

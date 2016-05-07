@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,13 +50,14 @@ public class UserRegister extends AppCompatActivity {
         //初始化控件
         initView();
 
+        //完成注册按钮的监听事件
         mSubmitRegis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String strNumber = mUserNumber.getText().toString();
                 final String strName = mUserName.getText().toString();
                 final String strPwd = mUserPwd.getText().toString();
-                String strRePwd = mUserRePwd.getText().toString();
+                final String strRePwd = mUserRePwd.getText().toString();
 
                 //对用户输入的信息进行判断
                 canRegister = isCanRegister(strNumber, strName, strPwd, strRePwd);
@@ -72,6 +76,24 @@ public class UserRegister extends AppCompatActivity {
 
     }
 
+
+    /**
+     * 导航栏的监听事件
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * 提交用户信息，完成注册
      * @param strNumber
@@ -79,12 +101,13 @@ public class UserRegister extends AppCompatActivity {
      * @param strPwd
      */
     private void submitUserInfo(String strNumber, String strName, String strPwd) {
-        String address = "";    //服务器地址
+        String address = "http://139.129.39.66/api/registered.php";    //服务器地址
 
         //拼接用户信息
         String userInfo = "user_number=" + strNumber + "&user_name=" + strName
-                            + "&user_pwd" + strPwd;
+                            + "&user_pwd=" + strPwd;
 
+        Log.d("UserRegister", "用户的信息是--" + userInfo);
         //将信息上传服务器，并接受返回的信息
         String ret_code = HttpUtil.sendPost(address, userInfo);
 
@@ -121,6 +144,7 @@ public class UserRegister extends AppCompatActivity {
                 case 0:
                     //注册成功，实现跳转
                     Intent intent = new Intent(UserRegister.this, MainActivity.class);
+                    Log.d("UserRegister", "为什么不跳转");
                     startActivity(intent);
                     finish();
                     break;
@@ -139,6 +163,7 @@ public class UserRegister extends AppCompatActivity {
     private void initView() {
         mToolBar = (Toolbar) findViewById(R.id.regis_tool);
         mToolBar.setTitle("注册");
+        mToolBar.setNavigationIcon(R.drawable.ic_menu_back);
         setSupportActionBar(mToolBar);
 
         mUserNumber = (EditText) findViewById(R.id.user_number);
@@ -160,7 +185,8 @@ public class UserRegister extends AppCompatActivity {
             Toast.makeText(UserRegister.this, "您还没有设置密码", Toast.LENGTH_SHORT).show();
         }else if (strPwd.length() < 6 || strPwd.length() > 12){
             Toast.makeText(UserRegister.this, "您设置的密码格式不对，请设置6-12位的密码", Toast.LENGTH_SHORT).show();
-        }else if (strRePwd != strPwd){
+        }else if (!strRePwd.equals(strPwd)){
+            Log.d("UserRegister", "strPwd--" + strPwd + ":" + "strRePwd--" + strRePwd);
             Toast.makeText(UserRegister.this, "您两次输入的密码不匹配，请确认后重新输入", Toast.LENGTH_SHORT).show();
         }
 

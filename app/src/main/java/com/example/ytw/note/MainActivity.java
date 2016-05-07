@@ -2,6 +2,7 @@ package com.example.ytw.note;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -181,6 +182,8 @@ public class MainActivity extends AppCompatActivity
         mUserImg = (ImageView) view.findViewById(R.id.user_img);
         mUserInfo = (RelativeLayout) view.findViewById(R.id.user_info);
 
+        mUserImg.setImageResource(R.drawable.head);
+        mUserImg.setDrawingCacheEnabled(true);
     }
 
     @Override
@@ -251,6 +254,9 @@ public class MainActivity extends AppCompatActivity
 
                 if (loginState){
                     Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("user_name", mLogin.getText().toString());
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }else {
                     Intent intent = new Intent(MainActivity.this, UserLogin.class);
