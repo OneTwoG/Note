@@ -47,16 +47,6 @@ public class MainActivity extends AppCompatActivity
     //用作Login跳转时的requestCode
     private static final int CODE_LOGIN = 1;
 
-    //头像文件
-    private static final String IMAGE_FILE_NAME = "temp_head_image.jpg";
-    //请求识别码
-    private static final int CODE_GALLERY_REQUEST = 0xa0;
-    private static final int CODE_CAMERA_REQUEST = 0xa1;
-    private static final int CODE_RESULT_REQUEST = 0xa2;
-
-    //裁剪后图片的宽(X)和高(Y)，480X480的正方形
-    private static int output_X = 480;
-    private static int output_Y = 480;
 
     Botton_Window botton_window;
 
@@ -87,66 +77,6 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 break;
-            case CODE_GALLERY_REQUEST:
-                /*这是从相册获取照片*/
-                getPhotoFromGallery(data);
-                break;
-            case CODE_CAMERA_REQUEST:
-                /*同过照相机获取照片*/
-                /*再次判断SDcard*/
-                getPhotoFromCamera();
-                break;
-            case CODE_RESULT_REQUEST:
-                if (data != null) {
-                    Bundle extras = data.getExtras();
-                    if (extras != null) {
-                        Bitmap photo = extras.getParcelable("data");
-                        mUserImg.setImageBitmap(photo);
-                    }
-                }
-                break;
-        }
-    }
-
-    /**
-     * 通过相机获取照片
-     */
-    private void getPhotoFromCamera() {
-        if (hasSDcard()){
-            File tempFile  = new File(Environment.getExternalStorageDirectory(), IMAGE_FILE_NAME);
-            Intent intent = new Intent("com.android.camera.action.CROP");
-            intent.setDataAndType(Uri.fromFile(tempFile), "image/*");
-
-            //设置裁剪
-            intent.putExtra("crop", "true");
-            // aspectX,aspectY:宽高比例
-            intent.putExtra("outputX", output_X);
-            intent.putExtra("outputY", output_Y);
-            intent.putExtra("return-data", true);
-            startActivityForResult(intent, CODE_RESULT_REQUEST);
-        }else {
-            Toast.makeText(MainActivity.this, "没有SD卡", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * 从相册获取照片
-     * @param data
-     */
-    private void getPhotoFromGallery(Intent data) {
-        try{
-            Intent intentFromGallery = new Intent("com.android.camera.action.CROP");
-            intentFromGallery.setDataAndType(data.getData(), "image/*");
-
-            //设置裁剪
-            intentFromGallery.putExtra("crop", "true");
-            // aspectX,aspectY:宽高比例
-            intentFromGallery.putExtra("outputX", output_X);
-            intentFromGallery.putExtra("outputY", output_Y);
-            intentFromGallery.putExtra("return-data", true);
-            startActivityForResult(intentFromGallery, CODE_RESULT_REQUEST);
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 
@@ -261,44 +191,9 @@ public class MainActivity extends AppCompatActivity
                 }else {
                     Intent intent = new Intent(MainActivity.this, UserLogin.class);
                     startActivityForResult(intent, CODE_LOGIN);
+                    loginState = true;
                 }
-                break;
-//            case R.id.user_img:
-//                //关闭侧滑栏
-//                drawer.closeDrawer(GravityCompat.START);
-//                //实例化底部窗口
-//                botton_window = new Botton_Window(this);
-//                //显示底部窗口
-//                botton_window.showAtLocation(MainActivity.this.findViewById(R.id.drawer_layout), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-//                break;
-            case R.id.btn_gallery:
-                Intent intentFromGallery = new Intent();
-                //设置文件类型
-                intentFromGallery.setType("image/*");
-                //允许用户选择特殊种类的数据，并返回（特殊种类的数据：照一张相片或录一段音）
-                intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intentFromGallery, CODE_GALLERY_REQUEST);
-                botton_window.dismiss();
-                break;
-            case R.id.btn_camera:
-                Intent intentFromCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                //判断SDcard是否可用
-                if (hasSDcard()){
-                    intentFromCamera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(Environment.getExternalStorageDirectory(), IMAGE_FILE_NAME)));
-                }
-                startActivityForResult(intentFromCamera, CODE_CAMERA_REQUEST);
                 break;
         }
     }
-
-    private boolean hasSDcard() {
-        String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED)){
-            //表示有SDcard,返回true
-            return true;
-        }else {
-            return false;
-        }
-    }
-
 }
