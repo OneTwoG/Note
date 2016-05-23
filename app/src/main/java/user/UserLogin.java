@@ -2,6 +2,7 @@ package user;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import com.example.ytw.note.R;
 
 import org.json.JSONObject;
 
+import Tool.MyTool;
 import uitl.HttpUtil;
 
 
@@ -42,6 +44,9 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
 
     //用于存储服务器返回的用户名
     private String user_name;
+    private String user_number;
+    private String user_photo;
+    private String user_info;
 
     //setResult返回的requestCode
     private static final int RESULT_OK = 1;
@@ -115,8 +120,6 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
 
         //上传服务器验证，并获取返回的信息
         String result_code = HttpUtil.sendPost(address, info);
-        Log.d("UserLogin", "返回的数据" + result_code);
-
         //对服务器返回的结果进行解析 判断
         if (result_code == null) {
             //返回结果为空，显示登陆失败
@@ -128,6 +131,8 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
             JSONObject jsonObject = new JSONObject(result_code);
             int ret_code = jsonObject.getInt("ret_code");
             user_name = jsonObject.getString("user_name");
+            user_number = jsonObject.getString("user_number");
+            user_photo = jsonObject.getString("user_photo");
             if (ret_code == LOGIN_OK) {
                 //登录成功
                 handler.sendEmptyMessage(LOGIN_OK);
@@ -151,15 +156,15 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                 case LOGIN_OK:
                     //登录成功,跳转，并将mUserCount的值通过Intent传到MainActivity，
                     // 将登录TextView设置成当前用户名
-                    isLoginok = true;
-
+                    user_info = user_number + "|" + user_name + "|" + user_photo;
                     Intent intent = new Intent(UserLogin.this, MainActivity.class);
-
                     Bundle bundle = new Bundle();
                     bundle.putString("user_name", user_name);
                     bundle.putBoolean("isLogin", true);
                     intent.putExtras(bundle);
                     setResult(LOGIN_OK, intent);
+                    MyTool myTool = new MyTool();
+                    myTool.SDcardSave(Environment.getExternalStorageDirectory() + "/Note/user_info.txt",user_info);
                     finish();
                     break;
                 case LOGIN_ERROR:

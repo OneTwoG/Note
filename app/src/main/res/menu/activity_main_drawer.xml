@@ -10,17 +10,17 @@
         <item
             android:id="@+id/nav_site"
             android:icon="@mipmap/ic_launcher"
-            android:title="@string/nav_site"/>
+            android:title="@string/nav_site" />
 
         <item
             android:id="@+id/nav_theme"
             android:icon="@mipmap/ic_launcher"
-            android:title="@string/nav_theme"/>
+            android:title="@string/nav_theme" />
 
         <item
             android:id="@+id/nav_weekly"
             android:icon="@mipmap/ic_launcher"
-            android:title="@string/nav_weekly"/>
+            android:title="@string/nav_weekly" />
 
         <item
             android:id="@+id/nav_my"
@@ -33,15 +33,15 @@
         <menu>
             <item
                 android:id="@+id/nav_model"
-                android:title="@string/nav_model"/>
+                android:title="@string/nav_model" />
 
             <item
                 android:id="@+id/nav_download"
-                android:title="@string/nav_download"/>
+                android:title="@string/nav_download" />
 
             <item
                 android:id="@+id/nav_setting"
-                android:title="@string/nav_setting"/>
+                android:title="@string/nav_setting" />
         </menu>
     </item>
 
