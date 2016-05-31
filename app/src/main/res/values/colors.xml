@@ -13,6 +13,9 @@
     <color name="colorPrimaryDark">@color/material_deep_teal_500</color>
     <color name="overflowTextColor">#9e9e9e</color>
 
+    <color name="yColor">#B16237</color>
+    <color name="backColor">#E79E68</color>
+
     <color name="dark">#FF222222</color>
     <color name="light">#FFEEEEEE</color>
 </resources>

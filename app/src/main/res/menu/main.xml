@@ -6,4 +6,11 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_Refresh"
+        android:orderInCategory="120"
+        android:title="Refresh"
+        android:icon="@drawable/ic_perm_group_sync_settings"
+        app:showAsAction="ifRoom" />
 </menu>

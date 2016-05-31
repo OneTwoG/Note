@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -22,6 +24,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,12 +56,12 @@ public class MainActivity extends AppCompatActivity
     private static final int LOGIN_OK = 0;      //登录成功的编号
     private static final int RETURN_DEL = 2;    //执行注销登录的编号
 
+    private Bitmap bm = null;   //用于存储照片的Bitmap
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Log.e("Mian", "onCreate");
 
         //初始化控件
         initView();
@@ -84,35 +92,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//    @Override
-//    protected void onPause() {
-//        Log.e("Main", "onPause()");
-//        if (mUserImg != null && mUserImg.getDrawable() != null){
-//            Bitmap oldBitmap = ((BitmapDrawable)mUserImg.getDrawable()).getBitmap();
-//            mUserImg.setImageDrawable(null);
-//
-//            if (oldBitmap != null){
-//                oldBitmap.recycle();
-//                oldBitmap = null;
-//            }
-//        }
-//        super.onPause();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        Log.e("Main", "onStop()");
-//        if (mUserImg != null && mUserImg.getDrawable() != null){
-//            Bitmap oldBitmap = ((BitmapDrawable)mUserImg.getDrawable()).getBitmap();
-//            mUserImg.setImageDrawable(null);
-//
-//            if (oldBitmap != null){
-//                oldBitmap.recycle();
-//                oldBitmap = null;
-//            }
-//        }
-//        super.onStop();
-//    }
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    mUserImg.setImageBitmap(bm);
+                    break;
+            }
+        }
+    };
 
     /**
      * 读取用户的本地信息。
@@ -135,11 +125,69 @@ public class MainActivity extends AppCompatActivity
                         if (mFile.exists()) {
                             bm = BitmapFactory.decodeFile(path);
                             mUserImg.setImageBitmap(bm);
+                        }else {
+                            downPhoto();
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * 下载用户照片
+     */
+    private void downPhoto() {
+        new Thread(){
+            @Override
+            public void run() {
+                //读取本地的user_info.txt
+                String fileName = getUserInfo();
+                try {
+                    //获取图片的URL
+                    URL url = new URL("http://139.129.39.66/img/" + fileName);
+                    try {
+                        //打开该URL对应的资源的输入流
+                        InputStream is = url.openStream();
+                        //从InputStream中解析出图片
+                        bm = BitmapFactory.decodeStream(is);
+                        is.close();
+
+                        //打开手机文件对应的资源的输入流
+                        is = url.openStream();
+                        //打开手机文件对应的输出流
+                        OutputStream os = new FileOutputStream(new File(Environment.getExternalStorageDirectory()
+                                + "/Note/img/" + fileName));
+                        byte[] buff = new byte[1024];
+                        int hasRead = 0;
+                        //将URL对应资源下载到本地
+                        while ((hasRead = is.read(buff)) > 0) {
+                            os.write(buff, 0, hasRead);
+                        }
+                        //发送消息，通知UI组建显示该图片
+                        handler.sendEmptyMessage(0);
+                        is.close();
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private String getUserInfo() {
+        String fileName = null;
+        String user_info = MyTool.readSDcard("/Note/user_info.txt");
+        if (!TextUtils.isEmpty(user_info)) {
+            String[] array = user_info.split("\\|");
+            if (array[2] != "未设置") {
+                fileName = array[2];
+            }
+        }
+        return fileName;
     }
 
     /**

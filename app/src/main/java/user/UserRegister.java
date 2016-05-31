@@ -106,8 +106,6 @@ public class UserRegister extends AppCompatActivity {
         //拼接用户信息
         String userInfo = "user_number=" + strNumber + "&user_name=" + strName
                             + "&user_pwd=" + strPwd;
-
-        Log.d("UserRegister", "用户的信息是--" + userInfo);
         //将信息上传服务器，并接受返回的信息
         String ret_code = HttpUtil.sendPost(address, userInfo);
 

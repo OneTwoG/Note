@@ -20,6 +20,7 @@ import com.example.ytw.note.R;
 import org.json.JSONObject;
 
 import Tool.MyTool;
+import db.MyDatabaseHelper;
 import uitl.HttpUtil;
 
 
@@ -165,6 +166,10 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                     setResult(LOGIN_OK, intent);
                     MyTool myTool = new MyTool();
                     myTool.SDcardSave(Environment.getExternalStorageDirectory() + "/Note/user_info.txt",user_info);
+
+//                    //创建该用户的数据库
+//                    MyDatabaseHelper dbHelper = new MyDatabaseHelper(UserLogin.this, "User_log.db", null, 1);
+//                    dbHelper.getWritableDatabase();
                     finish();
                     break;
                 case LOGIN_ERROR:

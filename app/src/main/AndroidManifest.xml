@@ -26,10 +26,11 @@
         <activity
             android:name="user.UserLogin" />
 
-        <activity
-            android:name=".UserInfoActivity" />
+        <activity android:name=".UserInfoActivity" />
 
         <activity android:name="user.UserRegister" />
+
+        <activity android:name=".Write_Log_Activity"/>
     </application>
 
 </manifest>

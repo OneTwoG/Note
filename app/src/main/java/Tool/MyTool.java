@@ -167,7 +167,7 @@ public class MyTool {
     /**
      * 将信息保存本地，以便下次显示
      */
-    public void SDcardSave(String filePath, String content) {
+    public static void SDcardSave(String filePath, String content) {
         try {
             FileOutputStream fos = new FileOutputStream(filePath);
             byte[] bytes = content.getBytes();
@@ -185,7 +185,7 @@ public class MyTool {
      * @param strUrl
      * @return
      */
-    public String readSDcard(String strUrl) {
+    public static String readSDcard(String strUrl) {
         StringBuffer sb = new StringBuffer();
 
         try {

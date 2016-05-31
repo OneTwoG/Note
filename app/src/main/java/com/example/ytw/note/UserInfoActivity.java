@@ -136,7 +136,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                                 String resultPhoto = jsonObject.getString("ret_photo");
 
                                 String oldPhoto = getUserInfo();
-                                Log.e("oldPhoto", oldPhoto + "");
+
                                 //将获取的到的resultPhoto拼接到mUser_info
                                 mUserInfo = mUserNumber + "|" + mUserName + "|" + resultPhoto;
                                 //将拼接好的用户信息保存
@@ -397,6 +397,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.btn_exit:
                 myTool.deleteFile(new File(Environment.getExternalStorageDirectory() + "/Note/user_info.txt"));
+
                 Intent intent = new Intent();
                 setResult(2, intent);
                 finish();
