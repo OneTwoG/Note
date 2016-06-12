@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.ytw.note.MainActivity;
+import com.example.ytw.note.Main_Fragment_Log;
 import com.example.ytw.note.R;
 
 import org.json.JSONObject;
@@ -134,6 +135,8 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
             user_name = jsonObject.getString("user_name");
             user_number = jsonObject.getString("user_number");
             user_photo = jsonObject.getString("user_photo");
+
+            Log.d("user", "checkFromServer: " + jsonObject.toString());
             if (ret_code == LOGIN_OK) {
                 //登录成功
                 handler.sendEmptyMessage(LOGIN_OK);
@@ -163,13 +166,10 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                     bundle.putString("user_name", user_name);
                     bundle.putBoolean("isLogin", true);
                     intent.putExtras(bundle);
-                    setResult(LOGIN_OK, intent);
                     MyTool myTool = new MyTool();
                     myTool.SDcardSave(Environment.getExternalStorageDirectory() + "/Note/user_info.txt",user_info);
-
-//                    //创建该用户的数据库
-//                    MyDatabaseHelper dbHelper = new MyDatabaseHelper(UserLogin.this, "User_log.db", null, 1);
-//                    dbHelper.getWritableDatabase();
+                    Log.d("user", "handleMessage: " + Environment.getExternalStorageDirectory() + "/Note/user_info.txt");
+                    setResult(LOGIN_OK, intent);
                     finish();
                     break;
                 case LOGIN_ERROR:
@@ -194,7 +194,8 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                 Toast.makeText(UserLogin.this, "这个还没准备好", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.iv_back:
-                finish();
+                Intent intentBack = new Intent(UserLogin.this, MainActivity.class);
+                startActivity(intentBack);
                 break;
             case R.id.iv_register:
                 //跳转到用户注册界面

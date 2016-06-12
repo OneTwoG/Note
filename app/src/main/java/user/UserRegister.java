@@ -2,6 +2,7 @@ package user;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import com.example.ytw.note.R;
 
 import org.json.JSONObject;
 
+import Tool.MyTool;
 import uitl.HttpUtil;
 
 /**
@@ -143,6 +145,13 @@ public class UserRegister extends AppCompatActivity {
                     //注册成功，实现跳转
                     Intent intent = new Intent(UserRegister.this, MainActivity.class);
                     Log.d("UserRegister", "为什么不跳转");
+
+                    String user_info = mUserNumber.getText().toString() + "|"
+                                        + mUserName.getText().toString() + "|"
+                                        + "未设置";
+
+                    MyTool.SDcardSave(Environment.getExternalStorageDirectory() + "/Note/user_info.txt",user_info);
+//                    setResult();
                     startActivity(intent);
                     finish();
                     break;
@@ -177,17 +186,25 @@ public class UserRegister extends AppCompatActivity {
         //对输入号码进行判断
         if (strNumber.length() != 11){
             Toast.makeText(UserRegister.this, "请输入正确的手机号码", Toast.LENGTH_SHORT).show();
+            return false;
         }else if (strName.isEmpty()){
             Toast.makeText(UserRegister.this, "请输入用户名", Toast.LENGTH_SHORT).show();
+            return false;
+
         }else if (strPwd.isEmpty()){
             Toast.makeText(UserRegister.this, "您还没有设置密码", Toast.LENGTH_SHORT).show();
+            return false;
+
         }else if (strPwd.length() < 6 || strPwd.length() > 12){
             Toast.makeText(UserRegister.this, "您设置的密码格式不对，请设置6-12位的密码", Toast.LENGTH_SHORT).show();
-        }else if (!strRePwd.equals(strPwd)){
-            Log.d("UserRegister", "strPwd--" + strPwd + ":" + "strRePwd--" + strRePwd);
-            Toast.makeText(UserRegister.this, "您两次输入的密码不匹配，请确认后重新输入", Toast.LENGTH_SHORT).show();
-        }
+            return false;
 
-        return true;
+        }else if (!strRePwd.equals(strPwd)){
+            Toast.makeText(UserRegister.this, "您两次输入的密码不匹配，请确认后重新输入", Toast.LENGTH_SHORT).show();
+            return false;
+
+        }else {
+            return true;
+        }
     }
 }

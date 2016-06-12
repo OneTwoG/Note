@@ -169,7 +169,12 @@ public class Write_Log_Activity extends AppCompatActivity {
                         //对返回的json进行解析
                         JSONObject returnJson = new JSONObject(respones);
                         int ret_code = returnJson.getInt("ret_code");
-                        int log_id = mId;
+                        int log_id;
+                        if (mId == 0){
+                            log_id = returnJson.getInt("log_id");
+                        }else {
+                            log_id = mId;
+                        }
 
                         Message msg = new Message();
                         msg.what = 1;
@@ -201,12 +206,15 @@ public class Write_Log_Activity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
+                    Intent intent = new Intent();
                     if (mId != 0){
                         Toast.makeText(Write_Log_Activity.this, "日记修改成功", Toast.LENGTH_SHORT).show();
+                        intent.putExtra("type", "update");
+                        Log.d(TAG, "handleMessage: update");
                     }else {
-                        Toast.makeText(Write_Log_Activity.this, "日记保存成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Write_Log_Activity.this, "日记保存成功", Toast.LENGTH_SHORT).show();                        intent.putExtra("type", "update");
+                        intent.putExtra("type", "insert");
                     }
-                    Intent intent = new Intent();
                     intent.putExtra("log_id", (Integer) msg.obj);
                     setResult(INTENT_RESULT, intent);
                     finish();
@@ -223,9 +231,9 @@ public class Write_Log_Activity extends AppCompatActivity {
      */
     private void init() {
         mToolbar = (Toolbar) findViewById(write_toolbar);
-        mToolbar.setTitle("日记");
-        mToolbar.setLogo(R.drawable.ic_note1);
-        mToolbar.setNavigationIcon(R.drawable.ic_return);
+        mToolbar.setTitle("写日记");
+//        mToolbar.setLogo(R.drawable.ic_note1);
+        mToolbar.setNavigationIcon(R.drawable.ic_ab_back_holo_light_am);
         setSupportActionBar(mToolbar);
 
         mTitle = (EditText) findViewById(R.id.write_title);

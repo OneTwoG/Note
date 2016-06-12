@@ -9,7 +9,7 @@
         android:id="@+id/write_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/yColor"
+        android:background="#00B1C6"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
     </android.support.v7.widget.Toolbar>
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#D69E65">
+        android:background="#00B1C6">
 
         <EditText
             android:id="@+id/write_title"
@@ -60,7 +60,6 @@
             android:id="@+id/write_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#57683C"
             android:layout_margin="10dp"
             android:padding="5dp"
             android:hint="请输入内容"

@@ -10,7 +10,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Tool.MyTool;
+import service.PlanService;
 import user.UserLogin;
 
 public class MainActivity extends AppCompatActivity
@@ -57,11 +58,19 @@ public class MainActivity extends AppCompatActivity
     private static final int RETURN_DEL = 2;    //执行注销登录的编号
 
     private Bitmap bm = null;   //用于存储照片的Bitmap
+    public static final String TAG = "MainActivity";
+
+    MyTool myTool = new MyTool();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myTool.createSDDirByTW("/Note");
+
+        Intent intent = new Intent(this, PlanService.class);
+        startService(intent);
 
         //初始化控件
         initView();
@@ -81,7 +90,6 @@ public class MainActivity extends AppCompatActivity
                             showUserInfo();
                             break;
                         case RETURN_DEL:          //删除了本地存储用户信息的user_info.txt
-                            Log.e("Main", "Delete");
                             mLogin.setText("登录");       //将原本的按钮登录还原
                             mRegister.setVisibility(View.VISIBLE);      //注册按钮可见
                             mUserImg.setImageResource(R.drawable.head);     //头像还原
@@ -92,11 +100,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    Handler handler = new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 0:
                     mUserImg.setImageBitmap(bm);
                     break;
@@ -108,8 +116,9 @@ public class MainActivity extends AppCompatActivity
      * 读取用户的本地信息。
      */
     private void showUserInfo() {
+
         //从本地读取登录用户的信息
-        MyTool myTool = new MyTool();
+
         String user_info = myTool.readSDcard("/Note/user_info.txt");
         if (!TextUtils.isEmpty(user_info)) {
             String[] array = user_info.split("\\|");
@@ -125,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                         if (mFile.exists()) {
                             bm = BitmapFactory.decodeFile(path);
                             mUserImg.setImageBitmap(bm);
-                        }else {
+                        } else {
                             downPhoto();
                         }
                     }
@@ -138,7 +147,7 @@ public class MainActivity extends AppCompatActivity
      * 下载用户照片
      */
     private void downPhoto() {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 //读取本地的user_info.txt
@@ -254,39 +263,20 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_index) {
-            // Handle the camera action
-        } else if (id == R.id.nav_site) {
-
+        if (id == R.id.nav_site) {
+            Toast.makeText(MainActivity.this, "该功能正在完善", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_theme) {
-
-        } else if (id == R.id.nav_weekly) {
-
-        } else if (id == R.id.nav_my) {
-
-        } else if (id == R.id.nav_download) {
-
+            Toast.makeText(MainActivity.this, "该功能正在完善", Toast.LENGTH_SHORT).show();
+        }else if (id == R.id.nav_about){
+            Intent intent = new Intent(MainActivity.this, About_Activity.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_model){
+            Toast.makeText(MainActivity.this, "该功能正在完善", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -307,6 +297,7 @@ public class MainActivity extends AppCompatActivity
                     Bundle bundle = new Bundle();
                     bundle.putString("user_name", mLogin.getText().toString());
                     intent.putExtras(bundle);
+                    drawer.closeDrawer(GravityCompat.START);
                     startActivityForResult(intent, CODE_RESULT);
                 } else {
                     Intent intent = new Intent(MainActivity.this, UserLogin.class);

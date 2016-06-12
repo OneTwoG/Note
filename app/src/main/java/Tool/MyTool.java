@@ -2,16 +2,17 @@ package Tool;
 
 import android.os.Environment;
 import android.util.Log;
-
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,6 +22,61 @@ import java.net.URL;
  */
 public class MyTool {
     private static String sdState = Environment.getExternalStorageState();
+
+
+    // 将字符串写入到文本文件中
+    public static void writeTxtToFile(String strcontent, String filePath, String fileName) {
+        //生成文件夹之后，再生成文件，不然会出错
+        makeFilePath(filePath, fileName);
+
+        String strFilePath = filePath+fileName;
+        // 每次写入时，都换行写
+        String strContent = strcontent + "\r\n";
+        try {
+            File file = new File(strFilePath);
+            if (!file.exists()) {
+                Log.d("TestFile", "Create the file:" + strFilePath);
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+            RandomAccessFile raf = new RandomAccessFile(file, "rwd");
+            raf.seek(file.length());
+            raf.write(strContent.getBytes());
+            raf.close();
+        } catch (Exception e) {
+            Log.e("TestFile", "Error on write File:" + e);
+        }
+    }
+
+    // 生成文件
+    public static File makeFilePath(String filePath, String fileName) {
+        File file = null;
+        makeRootDirectory(filePath);
+        try {
+            file = new File(filePath + fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    // 生成文件夹
+    public static void makeRootDirectory(String filePath) {
+        File file = null;
+        try {
+            file = new File(filePath);
+            if (!file.exists()) {
+                file.mkdir();
+            }
+        } catch (Exception e) {
+            Log.i("error:", e + "");
+        }
+
+    }
+
 
     /**
      * 从服务器上下载文件,并保存在SDCard中
@@ -120,6 +176,12 @@ public class MyTool {
         return dirFile;
     }
 
+    public File createSDDirByTW(String path) {
+        File dirFile = new File(Environment.getExternalStorageDirectory()+ "/Note" + File.separator);
+        dirFile.mkdir();
+        return dirFile;
+    }
+
     /**
      * 从服务器上获取字节流
      * @param s
@@ -173,9 +235,31 @@ public class MyTool {
             byte[] bytes = content.getBytes();
             fos.write(bytes);
             fos.close();
-            Log.d("tool", "写入成功");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 追加文件：使用FileOutputStream，在构造FileOutputStream时，把第二个参数设为true
+     *
+     * @param
+     * @param
+     */
+    public static void WriteToSDCard(String file, String conent) {
+        BufferedWriter out = null;
+        try {
+            out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(file, true)));
+            out.write(conent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

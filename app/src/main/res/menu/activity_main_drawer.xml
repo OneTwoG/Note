@@ -3,11 +3,6 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_index"
-            android:icon="@mipmap/ic_launcher"
-            android:title="@string/nav_index" />
-
-        <item
             android:id="@+id/nav_site"
             android:icon="@mipmap/ic_launcher"
             android:title="@string/nav_site" />
@@ -16,16 +11,6 @@
             android:id="@+id/nav_theme"
             android:icon="@mipmap/ic_launcher"
             android:title="@string/nav_theme" />
-
-        <item
-            android:id="@+id/nav_weekly"
-            android:icon="@mipmap/ic_launcher"
-            android:title="@string/nav_weekly" />
-
-        <item
-            android:id="@+id/nav_my"
-            android:icon="@mipmap/ic_launcher"
-            android:title="@string/nav_my" />
 
     </group>
 
@@ -36,12 +21,8 @@
                 android:title="@string/nav_model" />
 
             <item
-                android:id="@+id/nav_download"
-                android:title="@string/nav_download" />
-
-            <item
-                android:id="@+id/nav_setting"
-                android:title="@string/nav_setting" />
+                android:id="@+id/nav_about"
+                android:title="@string/nav_my" />
         </menu>
     </item>
 

@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Tool.MyTool;
+import plan.PlanModel;
+import timeline.TimeLineAdapter;
 import uitl.HttpUtil;
 
 /**
@@ -57,6 +59,9 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     private Toolbar mToolBar;
     private ImageView mUserImg;
     private Button mExit;
+    private List<String> planList;
+
+    private TimeLineAdapter mTimeLineAdapter;
 
     private String mUserInfo;               //用户的总信息，保存到本地user_info.txt
     private String mUserName;               //存储用户名的变量
@@ -145,7 +150,6 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                                 if (resultCode == 0) {
                                     //成功
                                     //删除oldPhoto
-                                    Log.e("Userinfo", Environment.getExternalStorageDirectory() + "/Note/img/" + oldPhoto);
                                     MyTool.deleteFile(new File(Environment.getExternalStorageDirectory() + "/Note/img/" + oldPhoto));
                                     handler.sendEmptyMessage(0);
                                 } else {
@@ -170,14 +174,13 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         Log.d("UserInfo--", "执行在onDestroy");
-        if (mUserImg != null && mUserImg.getDrawable() != null){
-            Bitmap oldBitmap = ((BitmapDrawable)mUserImg.getDrawable()).getBitmap();
-            mUserImg.setImageDrawable(null);
+        if (mUserImg != null && mUserImg.getDrawable() != null) {
 
-            if (oldBitmap != null){
-                oldBitmap.recycle();
-                oldBitmap = null;
+            if (bm != null){
+                bm.recycle();
             }
+
+            mUserImg.setImageDrawable(null);
         }
         super.onDestroy();
     }
@@ -193,7 +196,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         FileOutputStream out;
         try {
             out = new FileOutputStream(file);
-            if (mBitmap.compress(Bitmap.CompressFormat.PNG, 60, out)) {
+            if (mBitmap.compress(Bitmap.CompressFormat.PNG, 120, out)) {
                 out.flush();
                 out.close();
             }
@@ -270,6 +273,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * 获取用户信息
+     *
      * @return
      */
     @Nullable
@@ -360,29 +364,29 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
      * 读取本地存储的信息，并显示
      */
     private void showUserInfo() {
-                //从本地读取登录用户的信息
-                String user_info = myTool.readSDcard("/Note/user_info.txt");
+        //从本地读取登录用户的信息
+        String user_info = myTool.readSDcard("/Note/user_info.txt");
 
-                if (!TextUtils.isEmpty(user_info)) {
-                    String[] array = user_info.split("\\|");
-                    if (array != null) {
-                        mUserNumber = array[0];
-                        mUserName = array[1];
+        if (!TextUtils.isEmpty(user_info)) {
+            String[] array = user_info.split("\\|");
+            if (array != null) {
+                mUserNumber = array[0];
+                mUserName = array[1];
 
-                        if (!array[2].equals("未设置")) {
-                            String path = Environment.getExternalStorageDirectory() + PATHIMG + array[2].split("\n")[0];
-                            if (path != null) {
-                                File file = new File(path);
+                if (!array[2].equals("未设置")) {
+                    String path = Environment.getExternalStorageDirectory() + PATHIMG + array[2].split("\n")[0];
+                    if (path != null) {
+                        File file = new File(path);
 
-                                //如果该文件存在
-                                if (file.exists()) {
-                                    Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Note/img/" + array[2]);
-                                    mUserImg.setImageBitmap(bitmap);
-                                }
-                            }
+                        //如果该文件存在
+                        if (file.exists()) {
+                            Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Note/img/" + array[2]);
+                            mUserImg.setImageBitmap(bitmap);
                         }
                     }
                 }
+            }
+        }
     }
 
     @Override
@@ -398,9 +402,17 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btn_exit:
                 myTool.deleteFile(new File(Environment.getExternalStorageDirectory() + "/Note/user_info.txt"));
 
-                Intent intent = new Intent();
+                planList = new ArrayList<>();
+
+                String path = Environment.getExternalStorageDirectory() + "/Note/plan/";
+
+                File planFile = new File(path);
+
+                File[] files = planFile.listFiles();
+                getFileContent(files);
+                Intent intent = new Intent(UserInfoActivity.this, MainActivity.class);
                 setResult(2, intent);
-                finish();
+                startActivity(intent);
                 break;
             case R.id.btn_gallery:
                 //选择图片
@@ -422,5 +434,30 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
         albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(albumIntent, GALLERY);
+    }
+
+    //读取指定目录下的所有TXT文件的文件内容
+    protected String getFileContent(File[] files) {
+        String content = "";
+        if (files != null) {    // 先判断目录是否为空，否则会报空指针
+            for (File file : files) {
+                //检查此路径名的文件是否是一个目录(文件夹)
+                if (file.isDirectory()) {
+                    Log.i("zeng", "若是文件目录。继续读1" +
+                            file.getName().toString() + file.getPath().toString());
+                    getFileContent(file.listFiles());
+                    Log.i("zeng", "若是文件目录。继续读2" +
+                            file.getName().toString() + file.getPath().toString());
+                } else {
+                    if (file.getName().endsWith(".txt")) {//格式为txt文件
+
+                        file.delete();
+
+                    }
+                }
+            }
+
+        }
+        return content;
     }
 }
