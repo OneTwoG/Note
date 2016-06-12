@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/log_recycleerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/log_recycleerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
     <android.support.design.widget.FloatingActionButton
@@ -17,5 +17,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/add_log"/>
+        android:src="@drawable/add_log" />
 </android.support.design.widget.CoordinatorLayout>

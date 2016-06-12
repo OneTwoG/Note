@@ -7,29 +7,30 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/regis_tool"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"/>
 
-        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginRight="40dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/user_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="手机号码"
-            android:phoneNumber="true"/>
+            android:maxLength="11"
+            android:phoneNumber="true" />
 
         <EditText
             android:id="@+id/user_name"
@@ -41,23 +42,23 @@
             android:id="@+id/et_pwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:password="true"
-            android:hint="密码（6—12位）" />
+            android:hint="密码（6—12位）"
+            android:password="true" />
 
         <EditText
             android:id="@+id/et_repwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:password="true"
-            android:hint="重复密码"/>
+            android:hint="重复密码"
+            android:password="true" />
 
         <Button
             android:id="@+id/btn_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_dark"
             android:text="完成注册"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:background="@android:color/holo_green_dark"/>
+            android:textSize="20sp" />
     </LinearLayout>
 </LinearLayout>

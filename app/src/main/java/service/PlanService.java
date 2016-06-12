@@ -135,12 +135,12 @@ public class PlanService extends Service {
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext());
 
 // 设置通知的基本信息：icon、标题、内容
-                    builder.setSmallIcon(R.drawable.weibo);
+                    builder.setSmallIcon(R.drawable.main_logo);
                     builder.setContentTitle(planModelList.get(i).getTitle());
                     builder.setContentText(planModelList.get(i).getContent());
-                    builder.setAutoCancel(true);
+                    builder.setAutoCancel(false);
                     builder.setTicker("这是通知的ticker");
-                    long[] vibrates = {1, 1000, 1000, 1000};
+                    long[] vibrates = {0, 1000, 1000, 1000};
                     builder.setVibrate(vibrates);
                     builder.setLights(Color.GREEN, 1000, 1000);
                     builder.setDefaults(Notification.DEFAULT_ALL);
